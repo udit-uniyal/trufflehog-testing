@@ -41,7 +41,5 @@ jobs:
           TOKEN: ${{ secrets.TOKEN }}
           TENANT_ID: ${{ secrets.TENANT_ID }}
         run: |
-          curl --location --request POST "https://cspm.dev.accuknox.com/api/v1/artifact/?tenant_id=${{ env.TENANT_ID }}&data_type=TruffleHog&save_to_s3=false&label_id=trufflehog" \
-            --header "Tenant-Id: ${{ env.TENANT_ID }}" \
-            --header "Authorization: Bearer ${{ env.TOKEN }}" \
-            --form "file=@./trufflehog-results.json"
+          curl --location --request POST "https://cspm.dev.accuknox.com/api/v1/artifact/?tenant_id=${{ env.TENANT_ID }}&data_type=TruffleHog&save_to_s3=false&label_id=trufflehog" --header "Tenant-Id: ${{ env.TENANT_ID }}" --header "Authorization: Bearer ${{ env.TOKEN }}" --form "file=@./trufflehog-results.json"
+
