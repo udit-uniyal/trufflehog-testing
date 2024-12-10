@@ -28,7 +28,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          trufflehog git https://${{ secrets.GITHUB_TOKEN }}:x-oauth-basic@github.com/${{ github.repository }} --json > trufflehog-results.json
+          trufflehog git https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} --json > trufflehog-results.json
 
       # Upload the Results (Optional)
       - name: Upload Results
