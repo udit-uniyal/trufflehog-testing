@@ -34,7 +34,10 @@ jobs:
         with:
           name: trufflehog-results
           path: trufflehog-results.json
-
+          
+      - name: cat results
+        run: | 
+          ls && cat trufflehog-results.json
 
       - name: Upload to AccuKnox
         env:
