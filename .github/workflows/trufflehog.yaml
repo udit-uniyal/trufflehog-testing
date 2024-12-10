@@ -13,24 +13,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the code
+
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Install Trufflehog
+
       - name: Install Trufflehog
         run: |
           curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scripts/install.sh | sh -s -- -b /usr/local/bin
           trufflehog --version
 
-      # Run Trufflehog Scan
+
       - name: Run Trufflehog Scan
         run: |
           trufflehog filesystem . --json > trufflehog-results.json
 
-      # Upload the Results (Optional)
+
       - name: Upload Results
         uses: actions/upload-artifact@v3
         with:
           name: trufflehog-results
           path: trufflehog-results.json
+
+
+      - name: Upload to AccuKnox
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+          TENANT_ID: ${{ secrets.TENANT_ID }}
+        run: |
+          curl --location --request POST "https://cspm.dev.accuknox.com/api/v1/artifact/?tenant_id=${{ env.TENANT_ID }}&data_type=TruffleHog&save_to_s3=false&label_id=trufflehog" \
+          --header "Tenant-Id: ${{ env.TENANT_ID }}" \
+          --header "Authorization: Bearer ${{ env.TOKEN }}" \
+          --form "file=@trufflehog-results.json"
