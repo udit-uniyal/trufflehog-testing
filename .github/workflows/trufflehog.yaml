@@ -17,12 +17,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-
       - name: Install Trufflehog
         run: |
           curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scripts/install.sh | sh -s -- -b /usr/local/bin
           trufflehog --version
-
 
       - name: Run TruffleHog Scan
         env:
@@ -33,30 +31,21 @@ jobs:
           git config --global credential.helper store
           echo "https://username:${{ secrets.GH_TOKEN }}@github.com" > ~/.git-credentials
           trufflehog --no-update github --repo=https://github.com/udit-uniyal/trufflehog-testing --token=${{ secrets.GH_TOKEN }} --json > trufflehog-results/scan-results.json
-          jq '.' trufflehog-results/scan-results.json > trufflehog-results/pretty-scan-results.json
-          
+          jq '.' trufflehog-results/scan-results.json > trufflehog-results/trufflehog-results.json
         continue-on-error: true
-
-
-      - name: Run Trufflehog Scan
-        run: |
-          trufflehog filesystem . --json > trufflehog-results.json
-
 
       - name: Upload Results
         uses: actions/upload-artifact@v3
         with:
           name: trufflehog-results
-          path: trufflehog-results.json
-          
-      - name: cat results
-        run: | 
-          ls && cat trufflehog-results.json
+          path: trufflehog-results/trufflehog-results.json
 
       - name: Upload to AccuKnox
         env:
           TOKEN: ${{ secrets.TOKEN }}
           TENANT_ID: ${{ secrets.TENANT_ID }}
         run: |
-          curl --location --request POST "https://cspm.dev.accuknox.com/api/v1/artifact/?tenant_id=${{ env.TENANT_ID }}&data_type=TruffleHog&save_to_s3=false&label_id=trufflehog" --header "Tenant-Id: ${{ env.TENANT_ID }}" --header "Authorization: Bearer ${{ env.TOKEN }}" --form "file=@./trufflehog-results.json"
-
+          curl --location --request POST "https://cspm.dev.accuknox.com/api/v1/artifact/?tenant_id=${{ env.TENANT_ID }}&data_type=TruffleHog&save_to_s3=false&label_id=trufflehog" \
+          --header "Tenant-Id: ${{ env.TENANT_ID }}" \
+          --header "Authorization: Bearer ${{ env.TOKEN }}" \
+          --form "file=@trufflehog-results/trufflehog-results.json"
