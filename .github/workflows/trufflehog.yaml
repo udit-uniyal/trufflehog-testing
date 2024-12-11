@@ -24,6 +24,20 @@ jobs:
           trufflehog --version
 
 
+      - name: Run TruffleHog Scan
+        env:
+          GIT_TERMINAL_PROMPT: 0
+          GIT_ASKPASS: /bin/true
+        run: |
+          mkdir -p trufflehog-results
+          git config --global credential.helper store
+          echo "https://username:${{ secrets.GITHUB_TOKEN }}@github.com" > ~/.git-credentials
+          trufflehog --no-update github --repo=https://github.com/udit-uniyal/trufflehog-testing --token=${{ secrets.GITHUB_TOKEN }} --json > trufflehog-results/scan-results.json
+          jq '.' trufflehog-results/scan-results.json > trufflehog-results/pretty-scan-results.json
+          
+        continue-on-error: true
+
+
       - name: Run Trufflehog Scan
         run: |
           trufflehog filesystem . --json > trufflehog-results.json
