@@ -1,0 +1,24 @@
+{
+    "protocol": "sftp",
+    "host": "ftp.dlptest.com/",
+    "port": 22,
+    "user": "dlpuser",
+    "pass": "rNrKYTX9g7z3RgJRmxWuGHbeu",
+    "remote": "/remote/directory/path",
+    "local": "/local/directory/path",
+    "agent": "",
+    "privatekey": "/path/to/your/private/key",
+    "passphrase": "your_passphrase",
+    "uploadOnSave": true,
+    "syncMode": "update",
+    "ignore": [
+        ".ftpconfig",
+        "node_modules/**",
+        ".git/**"
+    ],
+    "watch": [],
+    "transport": "scp",
+    "secure": true,
+    "passive": false,
+    "promptForPass": false
+}
